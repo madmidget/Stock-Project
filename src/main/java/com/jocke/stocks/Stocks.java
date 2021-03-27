@@ -1,31 +1,42 @@
 package com.jocke.stocks;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+@Data
 public class Stocks {
 
-    private final int id;
-    private final String stockName;
-    private final double stockPrice;
-    private final boolean stockChange;
+  @JsonProperty private final String symbol;
+  @JsonProperty private final String name;
+  @JsonProperty private final double close;
+  @JsonProperty private final String currency;
+  @JsonProperty private final boolean stockChange;
 
-    public Stocks(int id, String stockName, double stockPrice, boolean stockChange) {
+  public String getSymbol() {
+    return symbol;
+  }
 
-        this.id = id;
-        this.stockName = stockName;
-        this.stockPrice = stockPrice;
-        this.stockChange = stockChange;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public int getId() { return id; }
+  public double getClose() {
+    return close;
+  }
 
-    public String getStockName() {
-        return stockName;
-    }
+  public String getCurrency() {
+    return currency;
+  }
 
-    public double getStockPrice() {
-        return stockPrice;
-    }
+  public boolean isStockChange() {
+    return stockChange;
+  }
 
-    public boolean getStockChange() {
-        return stockChange;
-    }
+  public Stocks(String symbol, String name, double close, String currency, boolean stockChange) {
+    this.symbol = symbol;
+    this.name = name;
+    this.close = close;
+    this.currency = currency;
+    this.stockChange = stockChange;
+  }
 }

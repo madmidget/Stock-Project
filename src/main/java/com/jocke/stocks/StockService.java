@@ -1,45 +1,52 @@
-package com.jocke.stocks.Service;
+package com.jocke.stocks;
 
-import com.jocke.stocks.MyStocks;
-import com.jocke.stocks.Stocks;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class StockService {
 
   private final RestTemplate restTemplate;
   private final String stockUrl;
+  private final String batchUrl =
+      "https://api.twelvedata.com/time_series?symbol=AAPL,EUR/USD,ETH/BTC:Huobi,RY:TSX&interval=1min&apikey=38645e2aa4a5474099683582d319c075";
   private final String apiKey;
 
   public StockService(
       RestTemplate restTemplate,
       @Value("${stock.api.url}") String stockUrl,
-      @Value("${api.key}") String apiKey)
-      throws IOException {
+      @Value("${api.key}") String apiKey) {
     this.restTemplate = restTemplate;
     this.stockUrl = stockUrl;
     this.apiKey = apiKey;
   }
 
-  // private static String url =
-  //
-  // "https://api.twelvedata.com/time_series?symbol=TSLA&interval=1min&outputsize=12&apikey=38645e2aa4a5474099683582d319c075";
-
-  public List<Stocks> findAll() {
+  public List<Stock> findAll() {
 
     MyStocks stocks = restTemplate.getForObject(stockUrl, MyStocks.class);
-
     System.out.println(stocks);
-    return Stream.of(new Stocks(1, "stock-1", 1.1, false), new Stocks(2, "stock-2", 2.2, true))
-        .collect(Collectors.toList());
+
+    return stocks.getData();
   }
 
-  Object parse(st)
+  public List<String> findCountries() {
+    MyStocks myStocks = restTemplate.getForObject(stockUrl, MyStocks.class);
+    List<Stock> stockList = myStocks.getData();
+    List<String> countries =
+        stockList.stream().map(stock -> stock.getCountry()).collect(Collectors.toList());
+    return countries;
+  }
+
+  public List<String> findSymbols() {
+    StockData stockData = restTemplate.getForObject(batchUrl, StockData.class);
+    System.out.println(stockData);
+    List<Stocks> stocksList = stockData.getData();
+    List<String> symbol =
+        stocksList.stream().map(stocks -> stocks.getSymbol()).collect(Collectors.toList());
+    return symbol;
+  }
 }
